@@ -38,8 +38,25 @@ def WR_WORD(address, val):
     jlink.memory_write32(address, [val])
 
 
+serial_no = 0x0133196c
+serial_choice = input("Choose the Jlink serial number: (Default = 0)\n"
+                      "0 - 0x0133196c\n"
+                      "1 - 0x01c0fe28\n"
+                      "-1 - not listed\n").strip() or '0'
+
+if serial_choice == '-1':
+    serial_no = input("Enter the Jlink serial number, in hex, without the 0x:\n")
+    serial_no = int(serial_no, 16)
+elif serial_choice == '0':
+    serial_no = 0x0133196c
+elif serial_choice == '1':
+    serial_no = 0x01c0fe28
+else:
+    print("swd.py: Invalid Jlink serial number. Exiting.\n")
+    exit()
+
 jlink = pylink.JLink()
-jlink.open(serial_no=0x0133196C)
+jlink.open(serial_no)
 print(jlink.product_name)
 jlink.set_tif(pylink.enums.JLinkInterfaces.SWD)
 jlink.connect('CORTEX-M4', speed=4000, verbose=True)
